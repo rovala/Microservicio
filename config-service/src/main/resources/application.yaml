@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  profiles:
+    active: git
   cloud:
     config:
       server:
@@ -8,6 +10,7 @@ spring:
           default-label: config-server
           uri: https://github.com/rovala/Microservicio
           search-paths: config-data
+          username: rovalasiul@gmail.com
+          password: juna1308@
   application:
     name: config-service
-          
