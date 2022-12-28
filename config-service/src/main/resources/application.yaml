@@ -3,7 +3,6 @@ server:
 spring:
   cloud:
     config:
-      enabled: true
       server:
         git:
           default-label: config-server
