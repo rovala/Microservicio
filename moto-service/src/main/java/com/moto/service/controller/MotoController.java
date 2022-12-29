@@ -54,7 +54,7 @@ public class MotoController
 	public ResponseEntity<List<Moto>> listarMotosByUsuario(@PathVariable Long idUser)
 	{
 		List<Moto> listaMotos=motoService.getAllByIdUser(idUser);
-		if (listaMotos.isEmpty())
+		if (listaMotos.isEmpty()||listaMotos==null)
 		{
 			return ResponseEntity.noContent().build();
 		}

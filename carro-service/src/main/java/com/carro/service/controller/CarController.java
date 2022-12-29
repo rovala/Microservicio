@@ -54,7 +54,7 @@ public class CarController
 	public ResponseEntity<List<Car>> listaCarroByUsuario(@PathVariable Long idUser)
 	{
 		List<Car> listaCarros=carService.getAllByIdUser(idUser);
-		if (listaCarros.isEmpty())
+		if (listaCarros.isEmpty()||listaCarros==null)
 		{
 			return ResponseEntity.noContent().build();
 		}
