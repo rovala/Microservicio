@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,8 @@ import com.usuario.service.entity.User;
 import com.usuario.service.models.Car;
 import com.usuario.service.models.Moto;
 import com.usuario.service.service.UserService;
+
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RestController
 @RequestMapping("/usuario")
@@ -54,6 +58,7 @@ public class UserController
 		return ResponseEntity.ok(savedUser);
 	}
 	
+	@CircuitBreaker(name="carrosCB",fallbackMethod="fallbackGetCarros")
 	@GetMapping("/carros/{idUser}")
 	public ResponseEntity<List<Car>> listarCarrosByUsuario(@PathVariable Long idUser)
 	{
@@ -70,6 +75,7 @@ public class UserController
 		return ResponseEntity.ok(listaCarros);
 	}
 	
+	@CircuitBreaker(name="motosCB",fallbackMethod="fallbackGetMotos")
 	@GetMapping("/motos/{idUser}")
 	public ResponseEntity<List<Moto>> listaMotosByUsuario(@PathVariable Long idUser)
 	{
@@ -87,6 +93,7 @@ public class UserController
 		return ResponseEntity.ok(listaMotos);
 	}
 	
+	@CircuitBreaker(name="carrosCB",fallbackMethod="fallbackGetSaveCarro")
 	@PostMapping("/carros/{idUser}")
 	public ResponseEntity<Car> saveCarro(@PathVariable Long idUser,@RequestBody Car car)
 	{
@@ -99,6 +106,7 @@ public class UserController
 		return ResponseEntity.ok(newCar);
 	}
 	
+	@CircuitBreaker(name="carrosCB",fallbackMethod="fallbackSaveMoto")
 	@PostMapping("/motos/{idUser}")
 	public ResponseEntity<Moto> saveMoto(@PathVariable Long idUser,@RequestBody Moto moto)
 	{
@@ -111,11 +119,41 @@ public class UserController
 		return ResponseEntity.ok(newMoto);
 	}
 	
+	@CircuitBreaker(name="todosCB",fallbackMethod="fallbackGetTodos")
 	@GetMapping("/todos/{idUser}")
 	public ResponseEntity<Map<String,Object>> listarTodosLosVehiculos(@PathVariable Long idUser)
 	{
 		Map<String,Object> resultado=userService.getUserAndVehiclesFeignClient(idUser);
 		return ResponseEntity.ok(resultado);
 	}
- 
+	
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
+	private ResponseEntity<List<Car>> fallbackGetCarros(@PathVariable Long idUser,RuntimeException e)
+	{
+		return new ResponseEntity("Carros no disponibles para el usuario " + idUser, HttpStatus.OK);
+	}
+	
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
+	private ResponseEntity<Car> fallbackSaveCarro(@PathVariable Long idUser, @RequestBody Car car,RuntimeException e)
+	{
+		return new ResponseEntity("El usuario " + idUser+ " no tiene dinero para comprar carros", HttpStatus.OK);
+	}
+	
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
+	private ResponseEntity fallbackGetMotos(@PathVariable Long idUser,RuntimeException e)
+	{
+		return new ResponseEntity("Motos no disponibles para el usuario " + idUser, HttpStatus.OK);
+	}
+	
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
+	private ResponseEntity<Moto> fallbackSaveMoto(@PathVariable Long idUser, @RequestBody Moto moto,RuntimeException e)
+	{
+		return new ResponseEntity("El usuario " + idUser+ " no tiene dinero para comprar motos", HttpStatus.OK);
+	}
+	
+	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
+	private ResponseEntity<Map<String,Object>> fallbackGetTodos(@PathVariable Long idUser,RuntimeException e)
+	{
+		return new ResponseEntity("El usuario " + idUser+ " tiene los vehiculos en el taller", HttpStatus.OK);
+	}
 }
