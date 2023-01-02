@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig
 {
 	@Bean
-	@LoadBalanced
+	@LoadBalanced//consolida la comunicacion entre servicios por el GATEWAY
 	public RestTemplate restTemplate()
 	{
 		return new RestTemplate();
