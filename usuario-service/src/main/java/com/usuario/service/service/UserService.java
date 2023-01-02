@@ -49,13 +49,13 @@ public class UserService
 	
 	public List<Car> getAllCarByUsuario(Long idUser)//COMUNICACION RESTTEMPLATE, posd: metodos get, post, corresponde al nombre de la funcion, ejemplo: getForOb... o postForOb...
 	{
-		List<Car> listaCarros=restTemplate.getForObject("http://localhost:8002/carro/usuario/"+idUser, List.class);
+		List<Car> listaCarros=restTemplate.getForObject("http://carro-service/carro/usuario/"+idUser, List.class);
 		return listaCarros;
 	}
 	
 	public List<Moto> getAllMotoByUsuario(Long idUser)//COMUNICACION RESTTEMPLATE, posd: metodos get, post, corresponde al nombre de la funcion, ejemplo: getForOb... o postForOb...
 	{
-		List<Moto> listaMotos=restTemplate.getForObject("http://localhost:8003/moto/usuario/"+idUser, List.class);
+		List<Moto> listaMotos=restTemplate.getForObject("http://moto-service/moto/usuario/"+idUser, List.class);
 		return listaMotos;
 	}
 	
