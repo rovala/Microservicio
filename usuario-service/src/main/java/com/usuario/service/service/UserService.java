@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.usuario.service.entity.User;
+import com.usuario.service.feignclients.BicycleFeignClient;
 import com.usuario.service.feignclients.CarFeignClient;
 import com.usuario.service.feignclients.MotoFeignClient;
 import com.usuario.service.models.Bicycle;
@@ -31,6 +32,9 @@ public class UserService
 	
 	@Autowired
 	private MotoFeignClient motoFeignClient;
+	
+	@Autowired
+	private BicycleFeignClient bicycleFeignClient;
 	
 	public List<User> getAll()
 	{
@@ -78,6 +82,12 @@ public class UserService
 		return motoFeignClient.save(moto);
 	}
 	
+	public Bicycle saveBicycleFeignClient(Bicycle bicycle, Long idUser)
+	{
+		bicycle.setIdUser(idUser);
+		return bicycleFeignClient.Save(bicycle);		
+	}
+	
 	public Map<String,Object> getUserAndVehiclesFeignClient(Long idUser)
 	{
 		Map<String,Object> listaVehiculos=new HashMap<>();
@@ -92,7 +102,7 @@ public class UserService
 			List<Car> listaCars=carroFeignClient.getCars(idUser);
 			if (listaCars==null || listaCars.isEmpty())
 			{
-				listaVehiculos.put("Carros","Usuario no tiene carros");
+				listaVehiculos.put("Carros: ","Usuario no tiene carros");
 			}
 			else
 			{
@@ -101,11 +111,20 @@ public class UserService
 			List<Moto> listaMotos=motoFeignClient.getMotos(idUser);
 			if (listaMotos==null || listaMotos.isEmpty())
 			{
-				listaVehiculos.put("Motos","Usuario no tiene motos");
+				listaVehiculos.put("Motos: ","Usuario no tiene motos");
 			}
 			else
 			{
 				listaVehiculos.put("Motos: ",listaMotos);
+			}
+			List<Bicycle> listaBicicletas=bicycleFeignClient.getBicycles(idUser);
+			if (listaBicicletas.isEmpty()||listaBicicletas==null)
+			{
+				listaVehiculos.put("Bicicletas: ","Usuario no tiene bicicletas");
+			}
+			else
+			{
+				listaVehiculos.put("Bicicletas: ",listaBicicletas);
 			}
 		}
 		return listaVehiculos;

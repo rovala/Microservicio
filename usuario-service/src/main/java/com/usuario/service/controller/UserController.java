@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -134,6 +133,18 @@ public class UserController
 		}
 		Moto newMoto=userService.saveMotoFeignClient(moto,idUser);
 		return ResponseEntity.ok(newMoto);
+	}
+	
+	@PostMapping("/bicicletas/{idUser}")
+	public ResponseEntity<Bicycle> saveBicicleta(@PathVariable Long idUser, @RequestBody Bicycle bicycle)
+	{
+		User foundUser=userService.getUserById(idUser);
+		if (foundUser==null)
+		{
+			return ResponseEntity.noContent().build();
+		}
+		Bicycle newBicycle=userService.saveBicycleFeignClient(bicycle, idUser);
+		return ResponseEntity.ok(newBicycle);
 	}
 	
 	@CircuitBreaker(name="todosCB",fallbackMethod="fallbackGetTodos")
