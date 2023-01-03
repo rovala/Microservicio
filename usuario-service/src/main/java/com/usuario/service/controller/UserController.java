@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.usuario.service.entity.User;
+import com.usuario.service.models.Bicycle;
 import com.usuario.service.models.Car;
 import com.usuario.service.models.Moto;
 import com.usuario.service.service.UserService;
@@ -91,6 +92,22 @@ public class UserController
 			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok(listaMotos);
+	}
+	
+	@GetMapping("/bicicletas/{idUser}")
+	public ResponseEntity<List<Bicycle>> listaBicicletasByUsuario(@PathVariable Long idUser)
+	{
+		User foundUser=userService.getUserById(idUser);
+		if (foundUser==null)
+		{
+			return ResponseEntity.notFound().build();
+		}
+		List<Bicycle> listaBicicletas=userService.getAllBicycleByUsuario(idUser);
+		if (listaBicicletas.isEmpty()||listaBicicletas==null)
+		{
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(listaBicicletas);
 	}
 	
 	@CircuitBreaker(name="carrosCB",fallbackMethod="fallbackGetSaveCarro")

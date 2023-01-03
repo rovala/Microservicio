@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import com.usuario.service.entity.User;
 import com.usuario.service.feignclients.CarFeignClient;
 import com.usuario.service.feignclients.MotoFeignClient;
+import com.usuario.service.models.Bicycle;
 import com.usuario.service.models.Car;
 import com.usuario.service.models.Moto;
 import com.usuario.service.repository.UserRepository;
@@ -57,6 +58,12 @@ public class UserService
 	{
 		List<Moto> listaMotos=restTemplate.getForObject("http://moto-service/moto/usuario/"+idUser, List.class);
 		return listaMotos;
+	}
+	
+	public List<Bicycle> getAllBicycleByUsuario(Long idUser)//COMUNICACION RESTTEMPLATE, posd: metodos get, post, corresponde al nombre de la funcion, ejemplo: getForOb... o postForOb...
+	{
+		List<Bicycle> listaBicicleta=restTemplate.getForObject("http://localhost:8005/bicicleta/usuario/"+idUser, List.class);
+		return listaBicicleta;
 	}
 	
 	public Car saveCarFeignClient(Car car,Long idUser)

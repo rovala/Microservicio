@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          default-label: circuit-breaker
+          default-label: new-entity
           uri: https://github.com/rovala/Microservicio
           search-paths: config-data
   application:
