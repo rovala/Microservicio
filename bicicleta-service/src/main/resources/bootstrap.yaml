@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  application:
+    name: bicicleta-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081
