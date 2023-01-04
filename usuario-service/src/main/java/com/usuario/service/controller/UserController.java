@@ -23,6 +23,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RestController
 @RequestMapping("/usuario")
+@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 public class UserController
 {
 	
@@ -93,6 +94,7 @@ public class UserController
 		return ResponseEntity.ok(listaMotos);
 	}
 	
+	@CircuitBreaker(name="bicicletasCB",fallbackMethod="fallbackGetBicicletas")
 	@GetMapping("/bicicletas/{idUser}")
 	public ResponseEntity<List<Bicycle>> listaBicicletasByUsuario(@PathVariable Long idUser)
 	{
@@ -135,6 +137,7 @@ public class UserController
 		return ResponseEntity.ok(newMoto);
 	}
 	
+	@CircuitBreaker(name="bicicletasCB",fallbackMethod="fallbackSaveBicicleta")
 	@PostMapping("/bicicletas/{idUser}")
 	public ResponseEntity<Bicycle> saveBicicleta(@PathVariable Long idUser, @RequestBody Bicycle bicycle)
 	{
@@ -155,31 +158,36 @@ public class UserController
 		return ResponseEntity.ok(resultado);
 	}
 	
-	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	private ResponseEntity<List<Car>> fallbackGetCarros(@PathVariable Long idUser,RuntimeException e)
 	{
 		return new ResponseEntity("Carros no disponibles para el usuario " + idUser, HttpStatus.OK);
 	}
 	
-	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	private ResponseEntity<Car> fallbackSaveCarro(@PathVariable Long idUser, @RequestBody Car car,RuntimeException e)
 	{
 		return new ResponseEntity("El usuario " + idUser+ " no tiene dinero para comprar carros", HttpStatus.OK);
 	}
 	
-	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	private ResponseEntity fallbackGetMotos(@PathVariable Long idUser,RuntimeException e)
 	{
 		return new ResponseEntity("Motos no disponibles para el usuario " + idUser, HttpStatus.OK);
 	}
 	
-	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
 	private ResponseEntity<Moto> fallbackSaveMoto(@PathVariable Long idUser, @RequestBody Moto moto,RuntimeException e)
 	{
 		return new ResponseEntity("El usuario " + idUser+ " no tiene dinero para comprar motos", HttpStatus.OK);
 	}
 	
-	@SuppressWarnings({ "unused", "rawtypes", "unchecked" })
+	private ResponseEntity<List<Bicycle>> fallbackGetBicicletas(@PathVariable Long idUser,RuntimeException e)
+	{
+		return new ResponseEntity("Bicicletas no disponibles para el usuario " + idUser,HttpStatus.OK);
+	}
+	
+	private ResponseEntity<Bicycle> fallbackSaveBicicleta(@PathVariable Long idUser,RuntimeException e)
+	{
+		return new ResponseEntity("El usuario "+idUser+" no tiene dinero para comprar bicicletas",HttpStatus.OK);
+	}
+	
 	private ResponseEntity<Map<String,Object>> fallbackGetTodos(@PathVariable Long idUser,RuntimeException e)
 	{
 		return new ResponseEntity("El usuario " + idUser+ " tiene los vehiculos en el taller", HttpStatus.OK);

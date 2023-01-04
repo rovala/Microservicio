@@ -66,7 +66,7 @@ public class UserService
 	
 	public List<Bicycle> getAllBicycleByUsuario(Long idUser)//COMUNICACION RESTTEMPLATE, posd: metodos get, post, corresponde al nombre de la funcion, ejemplo: getForOb... o postForOb...
 	{
-		List<Bicycle> listaBicicleta=restTemplate.getForObject("http://localhost:8005/bicicleta/usuario/"+idUser, List.class);
+		List<Bicycle> listaBicicleta=restTemplate.getForObject("http://bicicleta-service/bicicleta/usuario/"+idUser, List.class);
 		return listaBicicleta;
 	}
 	
